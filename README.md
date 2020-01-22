@@ -18,3 +18,13 @@ $ python manage.py migrate
 ...
 django.db.utils.DatabaseError: malformed database schema (core_book) - no such column: new__core_book.percent_unread
 ```
+
+On MariaDB, the constraint works with this SQL:
+
+```
+$ python manage.py sqlmigrate core 0002
+--
+-- Create constraint percentages_sum_100 on model book
+--
+ALTER TABLE `core_book` ADD CONSTRAINT `percentages_sum_100` CHECK (`percent_read` = ((100 - `core_book`.`percent_unread`) - `core_book`.`percent_ignored`));
+```
